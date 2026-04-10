@@ -1,0 +1,27 @@
+{
+  "common.save": "Сохранить",
+  "common.cancel": "Отмена",
+  "common.delete": "Удалить",
+  "common.edit": "Редактировать",
+  "common.create": "Создать",
+  "common.search": "Поиск",
+  "common.loading": "Загрузка...",
+  "common.noData": "Данные не найдены",
+  "common.confirm": "Подтвердить",
+  "common.back": "Назад",
+  "common.yes": "Да",
+  "common.no": "Нет",
+
+  "nav.home": "Главная",
+  "nav.products": "Продукты",
+
+  "home.title": "React Starter",
+  "home.description": "Шаблон React стартера с feature-based архитектурой",
+
+  "products.title": "Продукты",
+  "products.addProduct": "Добавить продукт",
+  "products.name": "Название",
+  "products.price": "Цена",
+  "products.description": "Описание",
+  "products.deleteConfirm": "Вы хотите удалить этот продукт?"
+}

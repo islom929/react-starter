@@ -1,0 +1,27 @@
+{
+  "common.save": "Saqlash",
+  "common.cancel": "Bekor qilish",
+  "common.delete": "O'chirish",
+  "common.edit": "Tahrirlash",
+  "common.create": "Yaratish",
+  "common.search": "Qidirish",
+  "common.loading": "Yuklanmoqda...",
+  "common.noData": "Ma'lumot topilmadi",
+  "common.confirm": "Tasdiqlash",
+  "common.back": "Orqaga",
+  "common.yes": "Ha",
+  "common.no": "Yo'q",
+
+  "nav.home": "Bosh sahifa",
+  "nav.products": "Mahsulotlar",
+
+  "home.title": "React Starter",
+  "home.description": "Feature-based arxitektura bilan qurilgan React starter shablon",
+
+  "products.title": "Mahsulotlar",
+  "products.addProduct": "Mahsulot qo'shish",
+  "products.name": "Nomi",
+  "products.price": "Narxi",
+  "products.description": "Tavsifi",
+  "products.deleteConfirm": "Bu mahsulotni o'chirishni xohlaysizmi?"
+}
