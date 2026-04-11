@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguageStore } from '@/shared/store/language'
+import { ROUTES } from '@/shared/constants/routes'
 import {
   Select,
   SelectContent,
@@ -23,17 +24,17 @@ export function Header() {
     <header className="border-b bg-white">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         <nav className="flex items-center gap-6">
-          <Link to="/" className="text-lg font-semibold">
+          <Link to={ROUTES.HOME} className="text-lg font-semibold">
             React Starter
           </Link>
           <Link
-            to="/"
+            to={ROUTES.HOME}
             className="text-sm text-neutral-600 hover:text-neutral-900"
           >
             {t('nav.home')}
           </Link>
           <Link
-            to="/products"
+            to={ROUTES.PRODUCTS}
             className="text-sm text-neutral-600 hover:text-neutral-900"
           >
             {t('nav.products')}

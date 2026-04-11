@@ -22,9 +22,9 @@ Feature-based React starter template with production-ready tooling.
 | Server State | TanStack React Query | 5.97 |
 | Client State | Zustand | 5.0 |
 | HTTP Client | Axios | 1.15 |
-| Styling | Tailwind CSS | 3.4 |
+| Styling | Tailwind CSS | 4.2 |
 | UI Components | shadcn/ui (Radix UI) | latest |
-| Forms | React Hook Form + Zod | 7.72 / 4.3 |
+| Forms | React Hook Form + Zod | 7.72 / 3.25 |
 | i18n | i18next + react-i18next | 26.0 / 17.0 |
 | Linting | ESLint + Prettier | 9.13 / 3.8 |
 | Git Hooks | Husky + lint-staged | 9.1 / 15.5 |

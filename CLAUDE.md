@@ -128,8 +128,30 @@ import { ProductForm } from '@/features/products/components/product-form'
 - Pages are composition only — import and arrange features
 - No business logic in pages — keep it in features
 
+### Route rules
+- All route paths defined in `shared/constants/routes.ts` as `ROUTES` object
+- Use `ROUTES.*` everywhere: router config, `<Link to>`, `navigate()`
+- Never hard-code route paths as strings
+
+```tsx
+// shared/constants/routes.ts
+export const ROUTES = {
+  HOME: '/',
+  PRODUCTS: '/products',
+}
+
+// router.tsx
+{ path: ROUTES.PRODUCTS, element: <ProductsPage /> }
+
+// Link
+<Link to={ROUTES.PRODUCTS}>
+
+// navigate
+navigate(ROUTES.PRODUCTS)
+```
+
 ### shared/ rules
-- Infrastructure code only: lib, hooks, types, locales, store
+- Infrastructure code only: lib, hooks, types, locales, store, constants
 - Frequently imported items (components) do NOT belong here
 
 ### shadcn/ui
