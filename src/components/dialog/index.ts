@@ -1,2 +1,2 @@
-export { DialogProvider, useDialog } from './dialog-provider'
-export { DialogWrapper } from './dialog-wrapper'
+export * from './dialog-provider'
+export * from './dialog-wrapper'

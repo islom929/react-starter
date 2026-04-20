@@ -1,1 +1,1 @@
-export { PRODUCTS_KEY } from './products.query-key'
+export * from './products.query-key'

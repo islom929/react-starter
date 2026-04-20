@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { TooltipProvider } from '@radix-ui/react-tooltip'
-import { queryClient } from '@/shared/lib/query'
+import { Toaster } from 'sonner'
+import { queryClient } from '@/shared/api'
 import { DialogProvider } from '@/components/dialog'
 
 import '@/shared/lib/i18n'
@@ -14,9 +15,17 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
         <TooltipProvider>
-          <DialogProvider>{children}</DialogProvider>
+          <DialogProvider>
+            {children}
+            <Toaster position="top-right" richColors />
+          </DialogProvider>
         </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>

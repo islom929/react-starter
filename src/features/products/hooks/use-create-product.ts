@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createProduct } from '../api'
 import type { TCreateProductInput } from '../types'
-import { PRODUCTS_KEY } from '../constants'
+import { productsKeys } from '../constants'
 
 export function useCreateProduct() {
   const queryClient = useQueryClient()
@@ -9,7 +9,7 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: (input: TCreateProductInput) => createProduct(input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY })
+      queryClient.invalidateQueries({ queryKey: productsKeys.base })
     },
   })
 }

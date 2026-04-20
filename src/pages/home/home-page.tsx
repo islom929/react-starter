@@ -13,7 +13,9 @@ export function HomePage() {
       </div>
 
       <div className="rounded-lg border bg-white p-6">
-        <h2 className="mb-4 text-lg font-semibold">Feature-Based Structure</h2>
+        <h2 className="mb-4 text-lg font-semibold">
+          {t('home.structureTitle')}
+        </h2>
         <pre className="rounded-md bg-neutral-100 p-4 text-sm">
           {`src/
 ├── app/           # Entry, providers, router
@@ -26,12 +28,13 @@ export function HomePage() {
       </div>
 
       <div className="rounded-lg border bg-white p-6">
-        <h2 className="mb-2 text-lg font-semibold">i18n</h2>
+        <h2 className="mb-2 text-lg font-semibold">{t('home.i18nTitle')}</h2>
         <p className="text-sm text-neutral-600">
-          Hozirgi til: <span className="font-mono font-semibold">{lang}</span>
+          {t('home.currentLang')}:{' '}
+          <span className="font-mono font-semibold">{lang}</span>
         </p>
         <p className="mt-1 text-sm text-neutral-600">
-          Headerdan tilni almashtiring
+          {t('home.changeLangHint')}
         </p>
       </div>
     </div>

@@ -1,1 +1,1 @@
-export { productSchema, type TProductFormValues } from './products.schema'
+export * from './products.schema'

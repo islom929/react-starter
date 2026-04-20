@@ -1,1 +1,1 @@
-export type { IProduct, TCreateProductInput } from './products.types'
+export * from './products.types'

@@ -17,11 +17,30 @@
 
   "home.title": "React Starter",
   "home.description": "Шаблон React стартера с feature-based архитектурой",
+  "home.structureTitle": "Feature-Based Структура",
+  "home.i18nTitle": "i18n",
+  "home.currentLang": "Текущий язык",
+  "home.changeLangHint": "Смените язык в хедере",
 
   "products.title": "Продукты",
   "products.addProduct": "Добавить продукт",
   "products.name": "Название",
   "products.price": "Цена",
   "products.description": "Описание",
-  "products.deleteConfirm": "Вы хотите удалить этот продукт?"
+  "products.category": "Категория",
+  "products.namePlaceholder": "Название продукта",
+  "products.descriptionPlaceholder": "Напишите описание",
+  "products.selectPlaceholder": "Выберите",
+  "products.deleteConfirm": "Вы хотите удалить этот продукт?",
+  "products.cat.electronics": "Электроника",
+  "products.cat.books": "Книги",
+  "products.cat.clothing": "Одежда",
+  "products.v.nameRequired": "Введите название",
+  "products.v.priceMin": "Цена должна быть больше 0",
+  "products.v.descriptionRequired": "Введите описание",
+  "products.v.categoryRequired": "Выберите категорию",
+
+  "error.unexpected": "Произошла непредвиденная ошибка",
+  "error.timeout": "Время запроса истекло",
+  "error.network": "Ошибка сети"
 }

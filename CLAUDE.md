@@ -8,7 +8,8 @@ Feature-based React starter template.
 - React Router v6
 - TanStack React Query v5 (server state)
 - Zustand (client state)
-- Axios (HTTP + interceptors)
+- Axios + qs (HTTP + interceptors + param serialization)
+- Sonner (toast notifications)
 - Tailwind CSS 4 + shadcn/ui (new-york style)
 - React Hook Form + Zod (form validation)
 - i18next (uz, ru, uz_cyr)
@@ -18,9 +19,14 @@ Feature-based React starter template.
 ```
 src/
 ├── app/                    # Entry, providers, router, global styles
+├── assets/                 # All static resources — images, icons, fonts
+│   ├── images/             # Photos, backgrounds, illustrations
+│   ├── icons/              # Custom SVGs (UI icons come from lucide-react)
+│   └── fonts/              # Font files (if self-hosted)
 ├── pages/                  # Page composition (no business logic here)
 │   └── [name]/
-│       ├── index.tsx
+│       ├── [name]-page.tsx # The page component (e.g. home-page.tsx)
+│       ├── index.ts        # barrel: export * from './[name]-page'
 │       └── components/     # Page-specific components only
 ├── features/               # Self-contained business logic modules
 │   └── [name]/
@@ -29,36 +35,70 @@ src/
 │       ├── constants/      # Query keys, enums, static data
 │       ├── hooks/          # Feature hooks (useQuery, useMutation)
 │       ├── types/          # Feature types
-│       └── schemas/        # Zod validation schemas
+│       └── schemas/        # Zod validation schemas (factories)
 ├── components/             # Shared UI (used in 2+ places)
 │   ├── ui/                 # shadcn primitives — DO NOT modify
 │   ├── form/               # Form wrappers (FormInput, FormSelect, FormTextarea)
 │   └── dialog/             # Global dialog system (Context-based, stack)
 ├── layouts/                # Layout components
 │   └── [name]/
-│       ├── index.tsx       # Layout + Outlet
+│       ├── [name].tsx      # The layout component (e.g. main-layout.tsx)
+│       ├── index.ts        # barrel: export * from './[name]'
 │       ├── header.tsx
 │       └── footer.tsx
 └── shared/                 # Infrastructure (rarely imported directly)
-    ├── lib/                # api.ts, query.ts, i18n.ts, utils.ts
-    ├── hooks/              # Shared hooks
-    ├── types/              # Shared types (IPagination, ApiError, ILang)
+    ├── api/                # HTTP + data-fetching layer
+    │   ├── client.ts       # axios instance + interceptors
+    │   ├── query-client.ts # React Query client + global onError
+    │   ├── error.ts        # getErrorMessage, getStatus
+    │   ├── auth-token.ts   # getToken, setToken, clearToken
+    │   └── index.ts        # barrel export
+    ├── constants/          # App-wide constants (routes, storage keys, event names)
+    ├── hooks/              # Shared hooks (useAuth, etc.)
+    ├── lib/                # Misc utilities (i18n setup, cn helper)
     ├── locales/            # Translation files (uz/, ru/, uz_cyr/)
-    └── store/              # Global zustand stores (language.ts)
+    ├── store/              # Global zustand stores (language.ts)
+    └── types/              # Shared types (IPagination, ApiError, ILang)
 ```
 
 ## File Naming & Export Conventions
 
-### All file names use kebab-case
+### All file names use kebab-case with a type suffix
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Hook | `use-[name].ts` | `use-products.ts` |
+| API functions | `[name].api.ts` | `products.api.ts` |
+| Types | `[name].types.ts` | `products.types.ts` |
+| Zod schema | `[name].schema.ts` | `products.schema.ts` |
+| Query keys | `[name].query-key.ts` | `products.query-key.ts` |
+| **App-wide constants** | **`[name].constants.ts`** | **`routes.constants.ts`, `base.constants.ts`** |
+| Component | `[name].tsx` | `product-form.tsx` |
+| Page | `[name]-page.tsx` | `home-page.tsx` |
+| Layout | `[name].tsx` | `main-layout.tsx` |
+
+Files under `shared/constants/` MUST use the `.constants.ts` suffix. `base.constants.ts` holds foundational constants like `TOKEN_KEY`, `AUTH_EVENT`. `routes.constants.ts` holds the `ROUTES` object. Never create `constants/auth.ts` or `constants/routes.ts` without the suffix.
+
+### Never name a component/page/layout file `index.tsx`
+
+`index.tsx` makes editor tabs and search results ambiguous (five `index.tsx` open at once — which is which?). Use descriptive filenames and keep `index.ts` as a tiny barrel:
 
 ```
-use-products.ts       # hook file
-products.api.ts       # api file
-products.types.ts     # types file
-products.schema.ts    # schema file
-products.query-key.ts # constants file
-product-form.tsx      # component file
+pages/home/
+├── home-page.tsx        # the component
+├── index.ts             # export * from './home-page'
+└── components/
 ```
+
+```
+layouts/main-layout/
+├── main-layout.tsx      # the component
+├── index.ts             # export * from './main-layout'
+├── header.tsx
+└── footer.tsx
+```
+
+Imports still resolve through the folder: `import { HomePage } from '@/pages/home'` works because `index.ts` re-exports.
 
 ### Feature file pattern: single file per concern with `[name].[type].ts`
 
@@ -91,13 +131,25 @@ features/products/
 - **Feature subfolders** (api/, hooks/, types/, schemas/, constants/) → have `index.ts` for short imports
 - **Feature root** → NO `index.ts` (no feature-level barrel export)
 - **Components** → NO `index.ts` — import each component directly by file path
+- **Always use `export *`** in barrel files — never named re-exports. Single line per source file. This way adding a new export to a source file doesn't require updating the barrel, and renaming stays in one place.
+
+```ts
+// GOOD — features/products/hooks/index.ts
+export * from './use-products'
+export * from './use-create-product'
+export * from './use-delete-product'
+
+// BAD — fragile, has to be updated every time you add an export
+export { useProducts } from './use-products'
+export { useCreateProduct } from './use-create-product'
+```
 
 This means imports look like:
 ```tsx
 // Subfolder barrel — short
 import { useProducts } from '@/features/products/hooks'
-import { PRODUCTS_KEY } from '@/features/products/constants'
-import type { Product } from '@/features/products/types'
+import { productsKeys } from '@/features/products/constants'
+import type { IProduct } from '@/features/products/types'
 
 // Components — direct file import
 import { ProductForm } from '@/features/products/components/product-form'
@@ -112,6 +164,45 @@ import { ProductForm } from '@/features/products/components/product-form'
 | Create | `useCreate[Entity]` | `useCreateProduct` |
 | Update | `useUpdate[Entity]` | `useUpdateProduct` |
 | Delete | `useDelete[Entity]` | `useDeleteProduct` |
+
+### Query keys use a factory (never hardcode strings)
+
+Each feature's `[feature].query-key.ts` exports a single `[feature]Keys` factory. The root string is a file-private `BASE` const — don't export it, use `productsKeys.base` everywhere.
+
+```ts
+// features/products/constants/products.query-key.ts
+const BASE = 'products'
+
+export const productsKeys = {
+  base: [BASE] as const,
+  list: [BASE, 'list'] as const,
+  detail: (id: string) => [BASE, 'detail', id] as const,
+}
+```
+
+```ts
+// Hook — plain list:
+useQuery({ queryKey: productsKeys.list, queryFn: getProducts })
+
+// Hook — list with filters (write them inline):
+useQuery({
+  queryKey: [...productsKeys.list, { category: 'books' }],
+  queryFn: () => getProducts({ category: 'books' }),
+})
+
+// Hook — detail:
+useQuery({ queryKey: productsKeys.detail(id), queryFn: () => getProduct(id) })
+
+// Mutation — invalidate everything for this feature (inside OR outside):
+queryClient.invalidateQueries({ queryKey: productsKeys.base })
+```
+
+**Three keys on the factory:**
+- `base` — root prefix, invalidates ALL queries for this feature
+- `list` — static prefix for list queries; filters get appended inline at the call site
+- `detail(id)` — specific item query
+
+**Why `BASE` is file-private:** `productsKeys.base` already gives `['products']` — anyone who needs the root can read it from the factory. Exporting the bare string adds nothing and forces a choice of descriptive name everywhere. Keep it private; add an export later only if a real use case appears (e.g. `predicate` callbacks that compare `query.queryKey[0]` against a bare string).
 
 ## Rules
 
@@ -129,12 +220,12 @@ import { ProductForm } from '@/features/products/components/product-form'
 - No business logic in pages — keep it in features
 
 ### Route rules
-- All route paths defined in `shared/constants/routes.ts` as `ROUTES` object
+- All route paths defined in `shared/constants/routes.constants.ts` as `ROUTES` object
 - Use `ROUTES.*` everywhere: router config, `<Link to>`, `navigate()`
 - Never hard-code route paths as strings
 
 ```tsx
-// shared/constants/routes.ts
+// shared/constants/routes.constants.ts
 export const ROUTES = {
   HOME: '/',
   PRODUCTS: '/products',
@@ -151,13 +242,56 @@ navigate(ROUTES.PRODUCTS)
 ```
 
 ### shared/ rules
-- Infrastructure code only: lib, hooks, types, locales, store, constants
+- Infrastructure code only: api, constants, hooks, lib, locales, store, types
 - Frequently imported items (components) do NOT belong here
+- `shared/api/` — all data-fetching infra (axios client, query client, error helpers, auth token). Import from barrel: `import { api, queryClient, getToken } from '@/shared/api'`
+- `shared/constants/` — anything reusable: route paths, storage keys (`TOKEN_KEY`), event names (`AUTH_EVENT`), enums shared across features. Do NOT hard-code these in multiple places
+
+### Asset placement
+- All static resources go in `src/assets/` — images, icons, fonts
+- Subfolders by type: `assets/images/`, `assets/icons/`, `assets/fonts/`
+- Import in TSX: `import bg from '@/assets/images/auth-bg.jpg'` — Vite hashes and optimizes
+- Prefer `<img src={bg} alt="" />` over `style={{ backgroundImage }}` — better a11y, lazy loading, preload
+- Do NOT put assets inside `features/` or `pages/` — keep them in `src/assets/` for one source of truth
+- UI icons come from `lucide-react` — only put custom brand/illustration SVGs in `assets/icons/`
+- `public/` is reserved for: `favicon.ico`, `robots.txt`, `manifest.json`, social-share OG images (anything referenced by stable URL from HTML)
 
 ### shadcn/ui
 - `components/ui/` is generated by shadcn CLI — do not modify
 - Add new components: `npx shadcn add [component]`
 - Custom wrappers go in `components/form/`
+
+## Auth & Token Handling
+
+Token lives in `localStorage` via three helpers (no Zustand store for the token itself):
+
+```ts
+// shared/api/auth-token.ts
+export function getToken(): string | null
+export function setToken(token: string): void   // dispatches auth:change
+export function clearToken(): void              // dispatches auth:change
+```
+
+- Axios interceptor reads via `getToken()` on every request — always fresh, handles refresh/cross-tab
+- 401 responses are handled globally in `query-client.ts` → clearToken() → UI reacts
+- For UI reactivity use `useAuth()` hook from `@/shared/hooks/use-auth` — it listens to `storage` event (cross-tab) and `auth:change` event (same-tab)
+- `TOKEN_KEY` and `AUTH_EVENT` live in `shared/constants/base.constants.ts`
+
+## Error Handling
+
+Global `MutationCache` + `QueryCache` `onError` handlers in `shared/api/query-client.ts` handle ALL errors:
+- 401 → clearToken() → ProtectedRoute redirects
+- Others → `toast.error(getErrorMessage(error))` with i18n fallbacks
+
+Hooks don't need `onError` — only `onSuccess` for specific actions (navigate, invalidate). Opt out of global toast via `meta: { skipErrorToast: true }`:
+
+```ts
+useMutation({
+  mutationFn: submit,
+  meta: { skipErrorToast: true },
+  onError: (error) => form.setError('root', { message: getErrorMessage(error) }),
+})
+```
 
 ## Dialog System
 
@@ -190,11 +324,33 @@ Form controls eliminate boilerplate:
 <FormInput control={form.control} name="email" label="Email" />
 <FormSelect control={form.control} name="role" label="Role" options={options} />
 <FormTextarea control={form.control} name="bio" label="Bio" />
-
-// Zod schema:
-const schema = z.object({ email: z.string().email() })
-type FormValues = z.infer<typeof schema>
 ```
+
+### Zod schemas are factories (for i18n validation messages)
+
+Never hardcode validation messages. Schemas are functions that take `t`:
+
+```ts
+// features/products/schemas/products.schema.ts
+import type { TFunction } from 'i18next'
+
+export const createProductSchema = (t: TFunction) =>
+  z.object({
+    name: z.string().min(1, t('products.v.nameRequired')),
+    price: z.number().min(0, t('products.v.priceMin')),
+  })
+
+export type TProductFormValues = z.infer<ReturnType<typeof createProductSchema>>
+```
+
+```tsx
+// Component — memoize schema so it stays stable between renders:
+const { t } = useTranslation()
+const schema = useMemo(() => createProductSchema(t), [t])
+const form = useForm({ resolver: zodResolver(schema), ... })
+```
+
+When the user switches language, `t` reference changes → schema rebuilds with new messages.
 
 ## i18n
 
@@ -203,13 +359,16 @@ type FormValues = z.infer<typeof schema>
 - Files: `shared/locales/{uz,ru,uz_cyr}/translation.json`
 - Switch language: `useLanguageStore()` → `setLang('ru')`
 - In components: `const { t } = useTranslation()` → `t('common.save')`
+- **Outside components** (utilities, error helpers): `import i18n from '@/shared/lib/i18n'` → `i18n.t('error.unexpected')`
+- **NEVER hardcode user-facing strings** — toast messages, placeholders, button labels, validation errors, fallback texts all must live in translation JSON. Key pattern: `[feature].[group].[name]` (e.g. `auth.v.emailInvalid`, `products.cat.books`, `error.timeout`)
 
 ## State Management
 
 - **Server state** → React Query (`useQuery`, `useMutation`)
 - **UI state** → Context (dialog)
 - **Global app state** → Zustand (language)
-- Do not use Zustand when React Query is sufficient
+- **Auth token** → `localStorage` via `getToken/setToken/clearToken` helpers (not Zustand — token doesn't need to be a reactive store)
+- Do not use Zustand when React Query or localStorage is sufficient
 
 ## Path Aliases
 
@@ -217,7 +376,8 @@ type FormValues = z.infer<typeof schema>
 
 ```tsx
 import { Button } from '@/components/ui/button'
-import { api } from '@/shared/lib/api'
+import { api, queryClient, getToken } from '@/shared/api'
+import { ROUTES, TOKEN_KEY } from '@/shared/constants'
 ```
 
 ## Commands
@@ -236,7 +396,7 @@ npm run preview  # Preview production build locally
 2. Add subdirectories: `api/`, `components/`, `constants/`, `hooks/`, `types/`, `schemas/`
 3. Each subfolder gets single files (`[name].[type].ts`) and an `index.ts` barrel export
 4. Components do NOT get `index.ts` — import directly by file path
-5. Create page at `pages/[name]/`, import from feature subfolders
+5. Create page at `pages/[name]/[name]-page.tsx` with `index.ts` barrel
 6. Add route in `app/router.tsx`
 
 ## Adding a shadcn Component

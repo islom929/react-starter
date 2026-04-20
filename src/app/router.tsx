@@ -2,7 +2,7 @@ import { useRoutes, type RouteObject } from 'react-router-dom'
 import { MainLayout } from '@/layouts/main-layout'
 import { HomePage } from '@/pages/home'
 import { ProductsPage } from '@/pages/products'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/shared/constants'
 
 const routes: RouteObject[] = [
   {

@@ -1,3 +1,3 @@
-export { FormInput } from './form-input'
-export { FormSelect } from './form-select'
-export { FormTextarea } from './form-textarea'
+export * from './form-input'
+export * from './form-select'
+export * from './form-textarea'

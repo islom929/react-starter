@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLanguageStore } from '@/shared/store/language'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/shared/constants'
 import {
   Select,
   SelectContent,

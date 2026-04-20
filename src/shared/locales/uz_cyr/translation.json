@@ -17,11 +17,30 @@
 
   "home.title": "React Starter",
   "home.description": "Feature-based архитектура билан қурилган React starter шаблон",
+  "home.structureTitle": "Feature-Based Структура",
+  "home.i18nTitle": "i18n",
+  "home.currentLang": "Ҳозирги тил",
+  "home.changeLangHint": "Хедердан тилни алмаштиринг",
 
   "products.title": "Маҳсулотлар",
   "products.addProduct": "Маҳсулот қўшиш",
   "products.name": "Номи",
   "products.price": "Нархи",
   "products.description": "Тавсифи",
-  "products.deleteConfirm": "Бу маҳсулотни ўчиришни хоҳлайсизми?"
+  "products.category": "Категория",
+  "products.namePlaceholder": "Маҳсулот номи",
+  "products.descriptionPlaceholder": "Тавсиф ёзинг",
+  "products.selectPlaceholder": "Танланг",
+  "products.deleteConfirm": "Бу маҳсулотни ўчиришни хоҳлайсизми?",
+  "products.cat.electronics": "Электроника",
+  "products.cat.books": "Китоблар",
+  "products.cat.clothing": "Кийимлар",
+  "products.v.nameRequired": "Ном киритиш шарт",
+  "products.v.priceMin": "Нарх 0 дан катта бўлиши керак",
+  "products.v.descriptionRequired": "Тавсиф киритиш шарт",
+  "products.v.categoryRequired": "Категория танлаш шарт",
+
+  "error.unexpected": "Кутилмаган хатолик юз берди",
+  "error.timeout": "Сўров вақти тугади",
+  "error.network": "Тармоқ хатолиги"
 }

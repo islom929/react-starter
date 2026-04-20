@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
@@ -6,13 +7,7 @@ import { Button } from '@/components/ui/button'
 import { FormInput } from '@/components/form/form-input'
 import { FormTextarea } from '@/components/form/form-textarea'
 import { FormSelect } from '@/components/form/form-select'
-import { productSchema, type TProductFormValues } from '../schemas'
-
-const categories = [
-  { value: 'electronics', label: 'Elektronika' },
-  { value: 'books', label: 'Kitoblar' },
-  { value: 'clothing', label: 'Kiyimlar' },
-]
+import { createProductSchema, type TProductFormValues } from '../schemas'
 
 interface IProductFormProps {
   onSubmit: (values: TProductFormValues) => void
@@ -22,8 +17,18 @@ interface IProductFormProps {
 export function ProductForm({ onSubmit, isLoading }: IProductFormProps) {
   const { t } = useTranslation()
 
+  const schema = useMemo(() => createProductSchema(t), [t])
+  const categories = useMemo(
+    () => [
+      { value: 'electronics', label: t('products.cat.electronics') },
+      { value: 'books', label: t('products.cat.books') },
+      { value: 'clothing', label: t('products.cat.clothing') },
+    ],
+    [t],
+  )
+
   const form = useForm<TProductFormValues>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: '',
       price: 0,
@@ -39,7 +44,7 @@ export function ProductForm({ onSubmit, isLoading }: IProductFormProps) {
           control={form.control}
           name="name"
           label={t('products.name')}
-          placeholder="Mahsulot nomi"
+          placeholder={t('products.namePlaceholder')}
         />
 
         <FormInput
@@ -53,8 +58,8 @@ export function ProductForm({ onSubmit, isLoading }: IProductFormProps) {
         <FormSelect
           control={form.control}
           name="category"
-          label="Kategoriya"
-          placeholder="Tanlang"
+          label={t('products.category')}
+          placeholder={t('products.selectPlaceholder')}
           options={categories}
         />
 
@@ -62,7 +67,7 @@ export function ProductForm({ onSubmit, isLoading }: IProductFormProps) {
           control={form.control}
           name="description"
           label={t('products.description')}
-          placeholder="Tavsif yozing"
+          placeholder={t('products.descriptionPlaceholder')}
           rows={3}
         />
 

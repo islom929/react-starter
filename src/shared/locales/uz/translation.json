@@ -17,11 +17,30 @@
 
   "home.title": "React Starter",
   "home.description": "Feature-based arxitektura bilan qurilgan React starter shablon",
+  "home.structureTitle": "Feature-Based Struktura",
+  "home.i18nTitle": "i18n",
+  "home.currentLang": "Hozirgi til",
+  "home.changeLangHint": "Header'dan tilni almashtiring",
 
   "products.title": "Mahsulotlar",
   "products.addProduct": "Mahsulot qo'shish",
   "products.name": "Nomi",
   "products.price": "Narxi",
   "products.description": "Tavsifi",
-  "products.deleteConfirm": "Bu mahsulotni o'chirishni xohlaysizmi?"
+  "products.category": "Kategoriya",
+  "products.namePlaceholder": "Mahsulot nomi",
+  "products.descriptionPlaceholder": "Tavsif yozing",
+  "products.selectPlaceholder": "Tanlang",
+  "products.deleteConfirm": "Bu mahsulotni o'chirishni xohlaysizmi?",
+  "products.cat.electronics": "Elektronika",
+  "products.cat.books": "Kitoblar",
+  "products.cat.clothing": "Kiyimlar",
+  "products.v.nameRequired": "Nom kiritish shart",
+  "products.v.priceMin": "Narx 0 dan katta bo'lishi kerak",
+  "products.v.descriptionRequired": "Tavsif kiritish shart",
+  "products.v.categoryRequired": "Kategoriya tanlash shart",
+
+  "error.unexpected": "Kutilmagan xatolik yuz berdi",
+  "error.timeout": "So'rov vaqti tugadi",
+  "error.network": "Tarmoq xatoligi"
 }
